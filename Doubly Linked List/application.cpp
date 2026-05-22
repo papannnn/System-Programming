@@ -35,4 +35,21 @@ int main () {
     add_data_to_dll(dll, c);
 
     traverse_dll(dll);
+
+    auto callback = [] (void *data, void *key) -> int {
+        Person *person = reinterpret_cast<Person*>(data);
+        int* age = reinterpret_cast<int*>(key);
+        if (person->age == *age) {
+            return 1;
+        }
+        return 0;
+    };
+
+    register_key_match_callback(dll, callback);
+    std::unique_ptr<int> key(new int(80));
+    void *search = dll_search_by_key(dll, key.get());
+    if (search != nullptr) {
+        Person *searchPerson = reinterpret_cast<Person*>(search);
+        std::cout << "Searched person: " << searchPerson->name << std::endl;
+    }
 }

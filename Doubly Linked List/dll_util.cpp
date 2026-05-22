@@ -66,3 +66,23 @@ void drain_dll(dll_ *dll) {
     }
     dll->head = nullptr;
 }
+
+void register_key_match_callback(dll_ *dll, int (*keymatch) (void * , void *)) {
+    dll->keymatch = keymatch;
+}
+
+void* dll_search_by_key(dll_ *dll, void *key) {
+    if (dll == nullptr || dll->keymatch == nullptr || dll->head == nullptr) {
+        return nullptr;
+    }
+
+    dll_node_ *curr = dll->head;
+    while (curr != nullptr) {
+        int found = dll->keymatch(curr->data, key);
+        if (found) {
+            return curr->data;
+        }
+        curr = curr->right;
+    }
+    return nullptr;
+}
