@@ -86,3 +86,54 @@ void* dll_search_by_key(dll_ *dll, void *key) {
     }
     return nullptr;
 }
+
+void register_comparison_callback(dll_ *dll, int (*comparison_fn) (void*, void*)) {
+    dll->comparison_fn = comparison_fn;
+}
+
+int dll_priority_insert_data(dll_ *dll, void *data) {
+    if (dll == nullptr || dll->comparison_fn == nullptr || data == nullptr) {
+        return -1;
+    }
+
+    dll_node_ *curr = reinterpret_cast<dll_node_*>(malloc(sizeof(dll_node_)));
+    curr->data = data;
+    curr->left = nullptr;
+    curr->right = nullptr;
+
+    // No data
+    if (dll->head == nullptr) {
+        dll->head = curr;
+        return 0;
+    }
+
+    // 1 data only
+    if (dll->head != nullptr && dll->head->right == nullptr) {
+        // Insert head
+        if (dll->comparison_fn(data, dll->head->data) == -1) {
+            dll->head->left = curr;
+            curr->right = dll->head;
+            dll->head = curr;
+        } else {
+            dll->head->right = curr;
+            curr->left = dll->head;
+        }
+        return 0;
+    }
+
+    dll_node_ *prev = dll->head;
+    while (prev->right != nullptr) {
+        if (dll->comparison_fn(data, prev->right->data) == -1) {
+            curr->left = prev;
+            curr->right = prev->right;
+            prev->right->left = curr;
+            prev->right = curr;
+            return 0;
+        }
+        prev = prev->right;
+    }
+
+    prev->right = curr;
+    curr->left = prev;
+    return 0;
+}

@@ -7,6 +7,7 @@ struct dll_node_ {
 struct dll_ {
     dll_node_ *head;
     int (*keymatch) (void*, void*);
+    int (*comparison_fn) (void*, void*);
 };
 
 dll_* get_new_dll();
@@ -22,3 +23,7 @@ void drain_dll(dll_ *dll);
 void register_key_match_callback(dll_ *dll, int (*) (void *, void *));
 
 void* dll_search_by_key(dll_ *dll, void *key);
+
+void register_comparison_callback(dll_ *dll, int (*) (void*, void*));
+
+int dll_priority_insert_data(dll_ *dll, void *data);

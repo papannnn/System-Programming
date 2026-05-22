@@ -52,4 +52,22 @@ int main () {
         Person *searchPerson = reinterpret_cast<Person*>(search);
         std::cout << "Searched person: " << searchPerson->name << std::endl;
     }
+
+    dll_ *prio_dll = get_new_dll();
+
+    auto comp = [] (void *a, void *b) -> int {
+        Person *personA = reinterpret_cast<Person*>(a);
+        Person *personB = reinterpret_cast<Person*>(b);
+        
+        if (personA->name <= personB->name) {
+            return -1;
+        }
+        return 0;
+    };
+
+    register_comparison_callback(prio_dll, comp);
+    dll_priority_insert_data(prio_dll, a);
+    dll_priority_insert_data(prio_dll, b);
+    dll_priority_insert_data(prio_dll, c);
+    traverse_dll(prio_dll);
 }
