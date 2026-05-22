@@ -59,15 +59,18 @@ int main () {
         Person *personA = reinterpret_cast<Person*>(a);
         Person *personB = reinterpret_cast<Person*>(b);
         
-        if (personA->name <= personB->name) {
+        if (personA->name < personB->name) {
             return -1;
         }
         return 0;
     };
 
+    Person *d = new Person("Afgan", 80, 100);
+
     register_comparison_callback(prio_dll, comp);
     dll_priority_insert_data(prio_dll, a);
     dll_priority_insert_data(prio_dll, b);
     dll_priority_insert_data(prio_dll, c);
+    dll_priority_insert_data(prio_dll, d);
     traverse_dll(prio_dll);
 }

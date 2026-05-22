@@ -121,6 +121,13 @@ int dll_priority_insert_data(dll_ *dll, void *data) {
         return 0;
     }
 
+    if (dll->comparison_fn(data, dll->head->data) == -1) {
+        dll->head->left = curr;
+        curr->right = dll->head;
+        dll->head = curr;
+        return 0;
+    }
+
     dll_node_ *prev = dll->head;
     while (prev->right != nullptr) {
         if (dll->comparison_fn(data, prev->right->data) == -1) {
